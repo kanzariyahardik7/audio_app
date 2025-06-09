@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_audio_app/theme/theme.dart';
 import 'package:my_audio_app/view/splash/splash.dart';
 
 void main() {
@@ -11,12 +12,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const SplashScreen(),
-    );
+    return MaterialApp(theme: lightTheme, home: const SplashScreen());
   }
 }
