@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_audio_app/theme/theme.dart';
 import 'package:my_audio_app/view/splash/splash.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -12,6 +13,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: lightTheme, home: const SplashScreen());
+    return MaterialApp(
+      theme: lightTheme,
+      home: const SplashScreen(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }

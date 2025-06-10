@@ -42,3 +42,20 @@ android {
 flutter {
     source = "../.."
 }
+
+
+
+dependencies {
+    // --- START: Corrected Kotlin DSL syntax for just_audio's ExoPlayer dependencies ---
+    // Make sure to use a stable and relatively recent version of ExoPlayer.
+    // As of my last update, a common stable version might be 2.18.7 or later.
+    // Always check the just_audio pub.dev page or ExoPlayer's official releases for the latest stable version.
+    val exoplayer_version = "2.18.7" // Use 'val' for variable declaration in Kotlin DSL
+
+    // Use the function call syntax for adding dependencies in Kotlin DSL
+    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayer_version")
+    implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayer_version")
+    implementation("com.google.android.exoplayer:exoplayer-hls:$exoplayer_version")
+    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayer_version")
+    // --- END: ExoPlayer dependencies ---
+}
