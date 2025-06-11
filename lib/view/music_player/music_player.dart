@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/model/music_details_model.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_audio_app/model/music_details_model.dart';
 import 'package:my_audio_app/resources/music_helper.dart';
 
 class MusicPlayerPage extends StatefulWidget {
@@ -20,10 +20,8 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   void initState() {
     super.initState();
 
-    // Start playing
     _musicHelper.playMusic(widget.musicDetailsModel.musicUrl);
 
-    // Listen to duration and position
     _musicHelper.positionStream.listen((pos) {
       setState(() => _currentPosition = pos);
     });
@@ -39,19 +37,18 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
     super.dispose();
   }
 
+  String formatDuration(Duration d) =>
+      d.toString().split('.').first.padLeft(8, "0");
+
   @override
   Widget build(BuildContext context) {
-    String formatDuration(Duration d) =>
-        d.toString().split('.').first.padLeft(8, "0");
-
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.red,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              // Back button and song info
               Row(
                 children: [
                   IconButton(
@@ -88,7 +85,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
 
               const SizedBox(height: 40),
 
-              // Progress bar
+              // Position + buffer slider
               Row(
                 children: [
                   Text(
@@ -96,17 +93,57 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   Expanded(
-                    child: Slider(
-                      value: _currentPosition.inSeconds.toDouble(),
-                      min: 0,
-                      max: _totalDuration.inSeconds.toDouble(),
-                      onChanged: (value) {
-                        _musicHelper.player.seek(
-                          Duration(seconds: value.toInt()),
+                    child: StreamBuilder<Duration>(
+                      stream: _musicHelper.bufferedPositionStream,
+                      builder: (context, bufferedSnapshot) {
+                        final buffered = bufferedSnapshot.data ?? Duration.zero;
+
+                        return Stack(
+                          alignment: Alignment.centerLeft,
+                          children: [
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                thumbShape: SliderComponentShape.noThumb,
+                                activeTrackColor: Colors.white24,
+                                inactiveTrackColor: Colors.white12,
+                                trackHeight: 2,
+                              ),
+                              child: Slider(
+                                value: buffered.inSeconds.toDouble().clamp(
+                                  0,
+                                  _totalDuration.inSeconds.toDouble(),
+                                ),
+                                min: 0,
+                                max: _totalDuration.inSeconds.toDouble(),
+                                onChanged: null,
+                              ),
+                            ),
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: Colors.white,
+                                inactiveTrackColor: Colors.transparent,
+                                thumbColor: Colors.white,
+                                trackHeight: 2,
+                              ),
+                              child: Slider(
+                                value: _currentPosition.inSeconds
+                                    .toDouble()
+                                    .clamp(
+                                      0,
+                                      _totalDuration.inSeconds.toDouble(),
+                                    ),
+                                min: 0,
+                                max: _totalDuration.inSeconds.toDouble(),
+                                onChanged: (value) {
+                                  _musicHelper.player.seek(
+                                    Duration(seconds: value.toInt()),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         );
                       },
-                      activeColor: Colors.white,
-                      inactiveColor: Colors.white24,
                     ),
                   ),
                   Text(
