@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_audio_app/resources/colors.dart';
 import 'package:my_audio_app/resources/utils.dart';
@@ -15,6 +16,8 @@ class MusicHelper {
     try {
       await _player.setUrl(url);
       await _player.play();
+    } on SocketException {
+      Utils.toastMessage("Internet Connection Lost", MyColors.red);
     } catch (e) {
       Utils.toastMessage("Error playing music: $e", MyColors.red);
     }
