@@ -59,7 +59,10 @@ class _MusicListPageState extends State<MusicListPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MusicPlayerPage()),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MusicPlayerPage(musicDetailsModel: track),
+                ),
               );
             },
             borderRadius: BorderRadius.circular(

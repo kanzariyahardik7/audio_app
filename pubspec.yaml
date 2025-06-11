@@ -41,6 +41,7 @@ dependencies:
   just_waveform: ^0.0.7
   provider: ^6.1.5
   cached_network_image: ^3.4.1
+  fluttertoast: ^8.2.12
 
 dev_dependencies:
   flutter_test:

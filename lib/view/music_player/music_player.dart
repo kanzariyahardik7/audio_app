@@ -1,20 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:my_audio_app/model/music_details_model.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:my_audio_app/resources/music_helper.dart';
 
 class MusicPlayerPage extends StatefulWidget {
-  const MusicPlayerPage({super.key});
+  final MusicDetailsModel musicDetailsModel;
+  const MusicPlayerPage({super.key, required this.musicDetailsModel});
 
   @override
   State<MusicPlayerPage> createState() => _MusicPlayerPageState();
 }
 
 class _MusicPlayerPageState extends State<MusicPlayerPage> {
+  final MusicHelper _musicHelper = MusicHelper();
+  Duration _currentPosition = Duration.zero;
+  Duration _totalDuration = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start playing
+    _musicHelper.playMusic(widget.musicDetailsModel.musicUrl);
+
+    // Listen to duration and position
+    _musicHelper.positionStream.listen((pos) {
+      setState(() => _currentPosition = pos);
+    });
+
+    _musicHelper.durationStream.listen((dur) {
+      if (dur != null) setState(() => _totalDuration = dur);
+    });
+  }
+
+  @override
+  void dispose() {
+    _musicHelper.player.stop();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    String formatDuration(Duration d) =>
+        d.toString().split('.').first.padLeft(8, "0");
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               // Back button and song info
@@ -22,27 +56,26 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () {},
+                    onPressed: () => Navigator.pop(context),
                   ),
                   const SizedBox(width: 20),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Now Playing',
-                        style: TextStyle(color: Colors.white54, fontSize: 14),
-                      ),
-                      Text(
-                        'Song Title',
-                        style: TextStyle(
-                          color: Colors.white,
+                        widget.musicDetailsModel.title,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Artist Name',
-                        style: TextStyle(color: Colors.white54, fontSize: 14),
+                        widget.musicDetailsModel.artist,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
                       ),
                     ],
                   ),
@@ -51,138 +84,104 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
 
               const Spacer(),
 
-              // Album art placeholder
-              Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Icon(
-                  Icons.music_note,
-                  size: 80,
-                  color: Colors.white54,
-                ),
-              ),
+              const Icon(Icons.music_note, size: 100, color: Colors.white70),
 
               const SizedBox(height: 40),
 
-              // Progress indicator
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    const Text('1:23', style: TextStyle(color: Colors.white54)),
-                    Expanded(
-                      child: SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.white,
-                          inactiveTrackColor: Colors.white24,
-                          thumbColor: Colors.white,
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 6,
-                          ),
-                          trackHeight: 2,
-                        ),
-                        child: const Slider(value: 0.4, onChanged: null),
-                      ),
+              // Progress bar
+              Row(
+                children: [
+                  Text(
+                    formatDuration(_currentPosition),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: _currentPosition.inSeconds.toDouble(),
+                      min: 0,
+                      max: _totalDuration.inSeconds.toDouble(),
+                      onChanged: (value) {
+                        _musicHelper.player.seek(
+                          Duration(seconds: value.toInt()),
+                        );
+                      },
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.white24,
                     ),
-                    const Text('3:45', style: TextStyle(color: Colors.white54)),
-                  ],
-                ),
+                  ),
+                  Text(
+                    formatDuration(_totalDuration),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 30),
 
-              // Control buttons
+              // Controls
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.loop, color: Colors.white54),
-                    onPressed: () {},
-                  ),
-                  IconButton(
                     icon: const Icon(
                       Icons.skip_previous,
-                      color: Colors.white,
                       size: 32,
+                      color: Colors.white,
                     ),
                     onPressed: () {},
                   ),
                   IconButton(
                     icon: const Icon(
                       Icons.replay_10,
-                      color: Colors.white,
                       size: 28,
-                    ),
-                    onPressed: () {},
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
                     ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.play_arrow,
-                        color: Colors.black,
-                        size: 36,
-                      ),
-                      onPressed: () {},
-                    ),
+                    onPressed: () {
+                      _musicHelper.player.seek(
+                        _currentPosition - const Duration(seconds: 10),
+                      );
+                    },
+                  ),
+                  StreamBuilder<PlayerState>(
+                    stream: _musicHelper.playerStateStream,
+                    builder: (context, snapshot) {
+                      final isPlaying = snapshot.data?.playing ?? false;
+                      return IconButton(
+                        icon: Icon(
+                          isPlaying ? Icons.pause : Icons.play_arrow,
+                          size: 36,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          isPlaying
+                              ? _musicHelper.pause()
+                              : _musicHelper.player.play();
+                        },
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(
                       Icons.forward_10,
-                      color: Colors.white,
                       size: 28,
+                      color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _musicHelper.player.seek(
+                        _currentPosition + const Duration(seconds: 10),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(
                       Icons.skip_next,
-                      color: Colors.white,
                       size: 32,
+                      color: Colors.white,
                     ),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.shuffle, color: Colors.white54),
                     onPressed: () {},
                   ),
                 ],
               ),
-
-              const SizedBox(height: 20),
-
-              // Volume control
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    const Icon(Icons.volume_up, color: Colors.white54),
-                    Expanded(
-                      child: SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.white,
-                          inactiveTrackColor: Colors.white24,
-                          thumbColor: Colors.white,
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 4,
-                          ),
-                          trackHeight: 2,
-                        ),
-                        child: const Slider(value: 0.7, onChanged: null),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const Spacer(),
             ],
           ),
         ),
