@@ -6,35 +6,10 @@ const String song3 = "https://gennii.com/test_audio/3_copy.mpeg";
 const String song4 = "https://gennii.com/test_audio/4_copy.mpeg";
 const String song5 = "https://gennii.com/test_audio/5_copy.mpeg";
 
-List<MusicDetailsModel> musicDataList = [
-  MusicDetailsModel(
-    id: 1,
-    title: 'Song 1',
-    artist: 'Artist 1',
-    musicUrl: song1,
-  ),
-  MusicDetailsModel(
-    id: 2,
-    title: 'Song 2',
-    artist: 'Artist 2',
-    musicUrl: song2,
-  ),
-  MusicDetailsModel(
-    id: 3,
-    title: 'Song 3',
-    artist: 'Artist 3',
-    musicUrl: song3,
-  ),
-  MusicDetailsModel(
-    id: 4,
-    title: 'Song 4',
-    artist: 'Artist 4',
-    musicUrl: song4,
-  ),
-  MusicDetailsModel(
-    id: 5,
-    title: 'Song 5',
-    artist: 'Artist 5',
-    musicUrl: song5,
-  ),
+final List<AudioModel> audios = [
+  AudioModel(title: "Song 1", url: song1, artist: "Artist 1"),
+  AudioModel(title: "Song 2", url: song2, artist: "Artist 2"),
+  AudioModel(title: "Song 3", url: song3, artist: "Artist 3"),
+  AudioModel(title: "Song 4", url: song4, artist: "Artist 4"),
+  AudioModel(title: "Song 5", url: song5, artist: "Artist 5"),
 ];

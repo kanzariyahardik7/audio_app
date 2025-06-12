@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(milliseconds: 3000), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MusicListPage()),
+        MaterialPageRoute(builder: (context) => const AudioListPage()),
       );
     });
   }

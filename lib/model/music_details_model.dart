@@ -1,13 +1,9 @@
-class MusicDetailsModel {
-  final int id;
+// =============================
+// models/audio_model.dart
+// =============================
+class AudioModel {
   final String title;
+  final String url;
   final String artist;
-  final String musicUrl; // Changed to URL for external images
-
-  MusicDetailsModel({
-    required this.id,
-    required this.title,
-    required this.artist,
-    required this.musicUrl,
-  });
+  AudioModel({required this.title, required this.url, required this.artist});
 }

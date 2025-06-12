@@ -1,34 +1,32 @@
-import 'dart:io';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_audio_app/resources/colors.dart';
-import 'package:my_audio_app/resources/utils.dart';
 
-class MusicHelper {
-  static final MusicHelper _instance = MusicHelper._internal();
-  factory MusicHelper() => _instance;
-  MusicHelper._internal();
+class AudioPlayerService {
+  static final AudioPlayerService _instance = AudioPlayerService._internal();
+  factory AudioPlayerService() => _instance;
 
   final AudioPlayer _player = AudioPlayer();
+  ConcatenatingAudioSource? _playlist;
 
   AudioPlayer get player => _player;
 
-  Future<void> playMusic(String url) async {
-    try {
-      await _player.setUrl(url);
-      await _player.play();
-    } on SocketException {
-      Utils.toastMessage("Internet Connection Lost", MyColors.red);
-    } catch (e) {
-      Utils.toastMessage("Error playing music: $e", MyColors.red);
-    }
+  AudioPlayerService._internal();
+
+  Future<void> setAudioList(List<String> urls) async {
+    _playlist = ConcatenatingAudioSource(
+      children: urls.map((url) => AudioSource.uri(Uri.parse(url))).toList(),
+    );
+    await _player.setAudioSource(_playlist!);
+  }
+
+  Future<void> playAtIndex(int index) async {
+    await _player.seek(Duration.zero, index: index);
+    await _player.play();
   }
 
   void pause() => _player.pause();
-
-  void dispose() => _player.dispose();
-
-  Stream<Duration> get positionStream => _player.positionStream;
-  Stream<Duration?> get durationStream => _player.durationStream;
-  Stream<PlayerState> get playerStateStream => _player.playerStateStream;
-  Stream<Duration> get bufferedPositionStream => _player.bufferedPositionStream;
+  void resume() => _player.play();
+  void skipNext() => _player.seekToNext();
+  void skipPrevious() => _player.seekToPrevious();
+  void toggleShuffle(bool enable) => _player.setShuffleModeEnabled(enable);
+  void setLoopMode(LoopMode mode) => _player.setLoopMode(mode);
 }
