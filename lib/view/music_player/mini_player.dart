@@ -1,6 +1,3 @@
-// =============================
-// views/mini_player.dart
-// =============================
 import 'package:flutter/material.dart';
 import 'package:my_audio_app/view/music_player/music_player.dart';
 import 'package:my_audio_app/view_model/audio_player_vm.dart';
@@ -13,29 +10,53 @@ class MiniPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AudioPlayerVM>(
       builder: (context, vm, _) {
-        if (!vm.isMiniPlayerVisible || vm.currentAudio == null) {
+        final index = vm.currentAudioIndex;
+        if (!vm.isMiniPlayerVisible || index == null) {
           return const SizedBox.shrink();
         }
-        return InkWell(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const FullPlayerPage()),
-          ),
-          child: Container(
-            color: Colors.black12,
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                const Icon(Icons.music_note),
-                const SizedBox(width: 10),
-                Expanded(child: Text(vm.currentAudio!.title)),
-                IconButton(
-                  icon: Icon(
-                    vm.player.playing ? Icons.pause : Icons.play_arrow,
+
+        final currentAudio = vm.audios[index];
+
+        return Material(
+          color: Colors.black12,
+          child: InkWell(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FullPlayerPage()),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  const Icon(Icons.music_note),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      currentAudio.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ),
-                  onPressed: vm.togglePlayPause,
-                ),
-              ],
+                  StreamBuilder<bool>(
+                    stream: vm.player.playingStream,
+                    initialData: vm.player.playing,
+                    builder: (context, snapshot) {
+                      final isPlaying = snapshot.data ?? false;
+                      return GestureDetector(
+                        onTap: vm.togglePlayPause,
+                        child: AbsorbPointer(
+                          child: IconButton(
+                            icon: Icon(
+                              isPlaying ? Icons.pause : Icons.play_arrow,
+                            ),
+                            onPressed: null,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -38,7 +38,6 @@ dependencies:
   audio_session: ^0.2.2
   audio_service: ^0.18.18
   just_audio_background: ^0.0.1-beta.17
-  just_waveform: ^0.0.7
   provider: ^6.1.5
   cached_network_image: ^3.4.1
   fluttertoast: ^8.2.12

@@ -2,14 +2,18 @@
 // views/audio_list_page.dart
 // =============================
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/resources/constant.dart';
 import 'package:my_audio_app/view/music_player/mini_player.dart';
 import 'package:my_audio_app/view_model/audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class AudioListPage extends StatelessWidget {
+class AudioListPage extends StatefulWidget {
   const AudioListPage({super.key});
 
+  @override
+  State<AudioListPage> createState() => _AudioListPageState();
+}
+
+class _AudioListPageState extends State<AudioListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,18 +21,16 @@ class AudioListPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: audios.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(audios[index].title),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.play_arrow),
-                    onPressed: () => Provider.of<AudioPlayerVM>(
-                      context,
-                      listen: false,
-                    ).play(audios[index], audios),
-                  ),
+            child: Consumer<AudioPlayerVM>(
+              builder: (context, value, child) {
+                return ListView.builder(
+                  itemCount: value.audios.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(value.audios[index].title),
+                      onTap: () => value.play(index),
+                    );
+                  },
                 );
               },
             ),
