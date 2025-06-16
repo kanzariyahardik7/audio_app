@@ -4,8 +4,8 @@ import 'package:my_audio_app/model/music_details_model.dart';
 import 'package:my_audio_app/resources/constant.dart';
 import 'package:my_audio_app/resources/music_player_service.dart';
 
-class AudioPlayerVM extends ChangeNotifier {
-  AudioPlayerVM() {
+class LocalAudioPlayerVM extends ChangeNotifier {
+  LocalAudioPlayerVM() {
     listenToIndexChanges();
     listenToCompletion(); // ✅ added
   }

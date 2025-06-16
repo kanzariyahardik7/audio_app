@@ -2,26 +2,26 @@
 // views/audio_list_page.dart
 // =============================
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/music_player/mini_player.dart';
-import 'package:my_audio_app/view_model/audio_player_vm.dart';
+import 'package:my_audio_app/view/online_music/online_music_player/online_mini_player.dart';
+import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class AudioListPage extends StatefulWidget {
-  const AudioListPage({super.key});
+class OnlineMusicListPage extends StatefulWidget {
+  const OnlineMusicListPage({super.key});
 
   @override
-  State<AudioListPage> createState() => _AudioListPageState();
+  State<OnlineMusicListPage> createState() => _OnlineMusicListPageState();
 }
 
-class _AudioListPageState extends State<AudioListPage> {
+class _OnlineMusicListPageState extends State<OnlineMusicListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Audio List")),
+      appBar: AppBar(title: const Text("Online Audio List")),
       body: Column(
         children: [
           Expanded(
-            child: Consumer<AudioPlayerVM>(
+            child: Consumer<OnlineAudioPlayerVM>(
               builder: (context, value, child) {
                 return ListView.builder(
                   itemCount: value.audios.length,
@@ -35,7 +35,7 @@ class _AudioListPageState extends State<AudioListPage> {
               },
             ),
           ),
-          const MiniPlayer(),
+          const OnlineMiniPlayer(),
         ],
       ),
     );

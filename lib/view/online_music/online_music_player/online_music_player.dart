@@ -3,7 +3,7 @@
 // =============================
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_audio_app/view_model/audio_player_vm.dart';
+import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
 class FullPlayerPage extends StatelessWidget {
@@ -13,7 +13,7 @@ class FullPlayerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<AudioPlayerVM>(context);
+    final vm = Provider.of<OnlineAudioPlayerVM>(context);
 
     return Scaffold(
       appBar: AppBar(

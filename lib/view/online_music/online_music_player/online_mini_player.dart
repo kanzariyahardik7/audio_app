@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/music_player/music_player.dart';
-import 'package:my_audio_app/view_model/audio_player_vm.dart';
+import 'package:my_audio_app/view/online_music/online_music_player/online_music_player.dart';
+import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class MiniPlayer extends StatelessWidget {
-  const MiniPlayer({super.key});
+class OnlineMiniPlayer extends StatelessWidget {
+  const OnlineMiniPlayer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AudioPlayerVM>(
+    return Consumer<OnlineAudioPlayerVM>(
       builder: (context, vm, _) {
         final index = vm.currentAudioIndex;
         if (!vm.isMiniPlayerVisible || index == null) {

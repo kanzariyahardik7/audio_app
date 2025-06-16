@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/music_list/music_list.dart';
+import 'package:my_audio_app/view/home/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,9 +26,10 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     Future.delayed(const Duration(milliseconds: 3000), () {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const AudioListPage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     });
   }

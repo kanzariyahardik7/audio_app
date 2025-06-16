@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_audio_app/theme/theme.dart';
 import 'package:my_audio_app/view/splash/splash.dart';
-import 'package:my_audio_app/view_model/audio_player_vm.dart';
+import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
+import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,7 +15,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AudioPlayerVM())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => OnlineAudioPlayerVM()),
+        ChangeNotifierProvider(create: (_) => LocalAudioPlayerVM()),
+      ],
       child: MaterialApp(
         theme: lightTheme,
         home: const SplashScreen(),
