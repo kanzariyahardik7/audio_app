@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/online_music/online_music_player/online_music_player.dart';
-import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
+import 'package:my_audio_app/view/local_music/local_music_player/local_music_player.dart';
+import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class OnlineMiniPlayer extends StatelessWidget {
-  const OnlineMiniPlayer({super.key});
+class LocalMiniPlayer extends StatelessWidget {
+  const LocalMiniPlayer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OnlineAudioPlayerVM>(
+    return Consumer<LocalAudioPlayerVM>(
       builder: (context, vm, _) {
         final index = vm.currentAudioIndex;
         if (!vm.isMiniPlayerVisible || index == null) {
           return const SizedBox.shrink();
         }
 
-        final currentAudio = vm.audios[index];
+        final currentAudio = vm.audioFiles[index];
 
         return InkWell(
           onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const FullPlayerPage()),
+            MaterialPageRoute(builder: (_) => const LocalFullPlayerPage()),
           ),
           child: Padding(
             padding: const EdgeInsets.all(12),

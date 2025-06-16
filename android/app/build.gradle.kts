@@ -11,12 +11,16 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "17"
+    }
+
+    kotlin {
+        jvmToolchain(17) // ✅ This ensures both Java and Kotlin use the same JVM version
     }
 
     defaultConfig {
@@ -31,9 +35,7 @@ android {
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+        getByName("release") {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -46,16 +48,10 @@ flutter {
 
 
 dependencies {
-    // --- START: Corrected Kotlin DSL syntax for just_audio's ExoPlayer dependencies ---
-    // Make sure to use a stable and relatively recent version of ExoPlayer.
-    // As of my last update, a common stable version might be 2.18.7 or later.
-    // Always check the just_audio pub.dev page or ExoPlayer's official releases for the latest stable version.
-    val exoplayer_version = "2.18.7" // Use 'val' for variable declaration in Kotlin DSL
+    val exoplayer_version = "2.18.7"
 
-    // Use the function call syntax for adding dependencies in Kotlin DSL
     implementation("com.google.android.exoplayer:exoplayer-core:$exoplayer_version")
     implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayer_version")
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoplayer_version")
     implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayer_version")
-    // --- END: ExoPlayer dependencies ---
 }

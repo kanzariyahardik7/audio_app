@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_audio_app/model/music_details_model.dart';
-import 'package:my_audio_app/resources/constant.dart';
-import 'package:my_audio_app/resources/music_player_service.dart';
+import 'package:my_audio_app/model/local_audio_model.dart';
+import 'package:my_audio_app/resources/audio_query.dart';
+import 'package:my_audio_app/resources/local_music_player.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LocalAudioPlayerVM extends ChangeNotifier {
   LocalAudioPlayerVM() {
@@ -33,19 +34,28 @@ class LocalAudioPlayerVM extends ChangeNotifier {
     });
   }
 
-  final MusicPlayerService _audioService = MusicPlayerService();
+  List<LocalAudio> audioFiles = [];
+
+  Future<void> requestPermissionAndFetch() async {
+    await [Permission.storage, Permission.audio].request();
+
+    final rawList = await AudioQuery().getAllAudio();
+
+    // Safely cast and convert to model list
+    audioFiles = (rawList as List)
+        .whereType<Map<dynamic, dynamic>>() // safe filtering
+        .map((e) => Map<String, String>.from(e)) // ensure type safety
+        .map((map) => LocalAudio.fromMap(map))
+        .toList();
+
+    notifyListeners();
+  }
+
+  final LocalMusicPlayerService _audioService = LocalMusicPlayerService();
 
   int? currentAudioIndex;
 
   bool isMiniPlayerVisible = false;
-
-  final List<AudioModel> audios = [
-    AudioModel(title: "Song 1", url: song1, artist: "Artist 1"),
-    AudioModel(title: "Song 2", url: song2, artist: "Artist 2"),
-    AudioModel(title: "Song 3", url: song3, artist: "Artist 3"),
-    AudioModel(title: "Song 4", url: song4, artist: "Artist 4"),
-    AudioModel(title: "Song 5", url: song5, artist: "Artist 5"),
-  ];
 
   AudioPlayer get player => _audioService.player;
 
@@ -58,12 +68,16 @@ class LocalAudioPlayerVM extends ChangeNotifier {
   Duration get currentPosition => player.position;
   Duration get duration => player.duration ?? Duration.zero;
 
+  /// ✅ Play audio at index from local file path
   void play(int index) async {
-    final urls = audios.map((e) => e.url).toList();
-    isMiniPlayerVisible = true;
+    final filePaths = audioFiles
+        .map((e) => e.path)
+        .toList(); // 🎯 Use local paths
     currentAudioIndex = index;
+    isMiniPlayerVisible = true;
     notifyListeners();
-    await _audioService.setAudioList(urls);
+
+    await _audioService.setAudioList(filePaths); // 🆕 set local audio
     await _audioService.playAtIndex(index);
     notifyListeners();
   }

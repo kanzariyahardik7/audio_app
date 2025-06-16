@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:my_audio_app/view/local_music/local_music_player/local_mini_player.dart';
+import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
+import 'package:provider/provider.dart';
 
 class LocalMusicList extends StatefulWidget {
   const LocalMusicList({super.key});
@@ -10,51 +11,44 @@ class LocalMusicList extends StatefulWidget {
 }
 
 class _LocalMusicListState extends State<LocalMusicList> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
-
-  List<SongModel> songs = [];
-
+  late LocalAudioPlayerVM localAudioPlayerVM;
   @override
   void initState() {
+    localAudioPlayerVM = Provider.of<LocalAudioPlayerVM>(
+      context,
+      listen: false,
+    );
     super.initState();
-    _fetchSongs();
-  }
 
-  Future<void> _fetchSongs() async {
-    // Ask for permission
-    if (!(await _audioQuery.permissionsStatus())) {
-      await _audioQuery.permissionsRequest();
-    }
-
-    // If still not granted, open settings
-    if (!(await Permission.storage.isGranted)) {
-      await openAppSettings();
-      return;
-    }
-
-    // Get songs
-    songs = await _audioQuery.querySongs();
-    setState(() {});
+    localAudioPlayerVM.requestPermissionAndFetch();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Local Audio Files")),
-      body: songs.isEmpty
-          ? const Center(child: Text("No songs found"))
-          : ListView.builder(
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                final song = songs[index];
-                return ListTile(
-                  leading: const Icon(Icons.music_note),
-                  title: Text(song.title),
-                  subtitle: Text(song.artist ?? "Unknown Artist"),
-                  onTap: () {},
+      appBar: AppBar(title: const Text('Local Audio Files')),
+      body: Column(
+        children: [
+          Expanded(
+            child: Consumer<LocalAudioPlayerVM>(
+              builder: (context, value, child) {
+                return ListView.builder(
+                  itemCount: value.audioFiles.length,
+                  itemBuilder: (context, index) {
+                    final audio = value.audioFiles[index];
+                    return ListTile(
+                      title: Text(audio.title),
+                      subtitle: Text(audio.artist),
+                      onTap: () => value.play(index),
+                    );
+                  },
                 );
               },
             ),
+          ),
+          LocalMiniPlayer(),
+        ],
+      ),
     );
   }
 }
