@@ -46,13 +46,15 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2C5364), Color(0xFF0F2027)],
+            colors: [colorScheme.primaryContainer, colorScheme.primary],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -60,26 +62,35 @@ class _SplashScreenState extends State<SplashScreen>
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.music_note, size: 100, color: Colors.white),
-                SizedBox(height: 20),
-                Text(
-                  'My Audio App',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.music_note,
+                    size: 100,
+                    color: colorScheme.onPrimary,
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Feel the music',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Text(
+                    'My Audio App',
+                    style: TextStyle(
+                      color: colorScheme.onPrimary,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Feel the music',
+                    style: TextStyle(
+                      color: colorScheme.onPrimary.withOpacity(0.7),
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
