@@ -124,4 +124,8 @@ class OnlineAudioPlayerVM extends ChangeNotifier {
     _audioService.setLoopMode(next);
     notifyListeners();
   }
+
+  void disposePlayer() {
+    _audioService.dispose();
+  }
 }

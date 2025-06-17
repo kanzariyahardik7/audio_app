@@ -35,6 +35,7 @@ class MusicPlayerService {
   void pause() => _player.pause();
   void resume() => _player.play();
   void stop() => _player.stop();
+  void dispose() => _player.dispose();
 
   Future<void> seek(Duration position) async => await _player.seek(position);
   void seekToNext() => _player.seekToNext();

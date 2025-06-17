@@ -24,6 +24,12 @@ class _LocalMusicListState extends State<LocalMusicList> {
   }
 
   @override
+  void dispose() {
+    localAudioPlayerVM.disposePlayer();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Local Audio Files')),

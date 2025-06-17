@@ -14,6 +14,22 @@ class OnlineMusicListPage extends StatefulWidget {
 }
 
 class _OnlineMusicListPageState extends State<OnlineMusicListPage> {
+  late OnlineAudioPlayerVM onlineAudioPlayerVM;
+  @override
+  void initState() {
+    onlineAudioPlayerVM = Provider.of<OnlineAudioPlayerVM>(
+      context,
+      listen: false,
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    onlineAudioPlayerVM.disposePlayer();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
