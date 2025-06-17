@@ -127,5 +127,6 @@ class OnlineAudioPlayerVM extends ChangeNotifier {
 
   void disposePlayer() {
     _audioService.dispose();
+    isMiniPlayerVisible = false;
   }
 }

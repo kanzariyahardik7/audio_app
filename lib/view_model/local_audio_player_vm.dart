@@ -34,7 +34,7 @@ class LocalAudioPlayerVM extends ChangeNotifier {
     });
   }
 
-  List<LocalAudio> audioFiles = [];
+  List<LocalAudio> audios = [];
 
   Future<void> requestPermissionAndFetch() async {
     await [Permission.storage, Permission.audio].request();
@@ -42,7 +42,7 @@ class LocalAudioPlayerVM extends ChangeNotifier {
     final rawList = await AudioQuery().getAllAudio();
 
     // Safely cast and convert to model list
-    audioFiles = (rawList as List)
+    audios = (rawList as List)
         .whereType<Map<dynamic, dynamic>>() // safe filtering
         .map((e) => Map<String, String>.from(e)) // ensure type safety
         .map((map) => LocalAudio.fromMap(map))
@@ -70,9 +70,7 @@ class LocalAudioPlayerVM extends ChangeNotifier {
 
   /// ✅ Play audio at index from local file path
   void play(int index) async {
-    final filePaths = audioFiles
-        .map((e) => e.path)
-        .toList(); // 🎯 Use local paths
+    final filePaths = audios.map((e) => e.path).toList(); // 🎯 Use local paths
     currentAudioIndex = index;
     isMiniPlayerVisible = true;
     notifyListeners();
@@ -141,5 +139,6 @@ class LocalAudioPlayerVM extends ChangeNotifier {
 
   void disposePlayer() {
     _audioService.dispose();
+    isMiniPlayerVisible = false;
   }
 }

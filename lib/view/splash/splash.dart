@@ -21,7 +21,11 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _controller.forward();
 
@@ -29,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const HomePage()),
       );
     });
   }
@@ -53,28 +57,30 @@ class _SplashScreenState extends State<SplashScreen>
             end: Alignment.bottomCenter,
           ),
         ),
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.music_note, size: 100, color: Colors.white),
-              SizedBox(height: 20),
-              Text(
-                'My Audio App',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
+        child: SafeArea(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.music_note, size: 100, color: Colors.white),
+                SizedBox(height: 20),
+                Text(
+                  'My Audio App',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Feel the music',
-                style: TextStyle(color: Colors.white70, fontSize: 14),
-              ),
-            ],
+                SizedBox(height: 10),
+                Text(
+                  'Feel the music',
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+              ],
+            ),
           ),
         ),
       ),
