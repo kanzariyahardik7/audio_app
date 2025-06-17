@@ -11,6 +11,8 @@ class LocalFullPlayerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<LocalAudioPlayerVM>(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     final currentIndex = vm.currentAudioIndex;
     final currentAudio = currentIndex != null ? vm.audios[currentIndex] : null;
 
@@ -19,8 +21,11 @@ class LocalFullPlayerPage extends StatelessWidget {
         title: Text(
           currentAudio?.title ?? 'Now Playing',
           overflow: TextOverflow.ellipsis,
+          style: TextStyle(color: colorScheme.onPrimary),
         ),
+        backgroundColor: colorScheme.primary,
         centerTitle: true,
+        iconTheme: IconThemeData(color: colorScheme.onPrimary),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -34,23 +39,23 @@ class LocalFullPlayerPage extends StatelessWidget {
               width: 260,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFf953c6), Color(0xFFb91d73)],
+                gradient: LinearGradient(
+                  colors: [colorScheme.primary, colorScheme.primaryContainer],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: colorScheme.shadow.withOpacity(0.25),
                     blurRadius: 16,
-                    offset: Offset(0, 6),
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.music_note,
                 size: 100,
-                color: Colors.white,
+                color: colorScheme.onPrimary,
               ),
             ),
 
@@ -59,7 +64,11 @@ class LocalFullPlayerPage extends StatelessWidget {
             // Song Title
             Text(
               currentAudio?.title ?? 'Unknown Title',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onBackground,
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -71,7 +80,10 @@ class LocalFullPlayerPage extends StatelessWidget {
               currentAudio?.artist.isNotEmpty == true
                   ? currentAudio!.artist
                   : 'Unknown Artist',
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 14,
+                color: colorScheme.onBackground.withOpacity(0.6),
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -100,8 +112,8 @@ class LocalFullPlayerPage extends StatelessWidget {
                           child: Slider(
                             value: pos.inSeconds.toDouble(),
                             max: total.inSeconds.toDouble() + 1,
-                            activeColor: Colors.pink,
-                            inactiveColor: Colors.pink.shade100,
+                            activeColor: colorScheme.primary,
+                            inactiveColor: colorScheme.primary.withOpacity(0.3),
                             onChanged: (value) {},
                             onChangeEnd: (v) =>
                                 vm.seek(Duration(seconds: v.toInt())),
@@ -112,11 +124,19 @@ class LocalFullPlayerPage extends StatelessWidget {
                           children: [
                             Text(
                               format(pos),
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: colorScheme.onBackground.withOpacity(
+                                  0.6,
+                                ),
+                              ),
                             ),
                             Text(
                               format(total),
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: colorScheme.onBackground.withOpacity(
+                                  0.6,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -136,22 +156,24 @@ class LocalFullPlayerPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),
                   iconSize: 36,
+                  color: colorScheme.onBackground,
                   onPressed: vm.playPreviousSong,
                 ),
                 IconButton(
                   icon: const Icon(Icons.replay_10_rounded),
                   iconSize: 36,
+                  color: colorScheme.onBackground,
                   onPressed: vm.skipBackward10Seconds,
                 ),
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.pink,
+                  backgroundColor: colorScheme.primary,
                   child: IconButton(
                     icon: Icon(
                       vm.isPlaying
                           ? Icons.pause_rounded
                           : Icons.play_arrow_rounded,
-                      color: Colors.white,
+                      color: colorScheme.onPrimary,
                       size: 36,
                     ),
                     onPressed: vm.togglePlayPause,
@@ -160,11 +182,13 @@ class LocalFullPlayerPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.forward_10_rounded),
                   iconSize: 36,
+                  color: colorScheme.onBackground,
                   onPressed: vm.skipForward10Seconds,
                 ),
                 IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
                   iconSize: 36,
+                  color: colorScheme.onBackground,
                   onPressed: vm.playNextSong,
                 ),
               ],
@@ -179,7 +203,9 @@ class LocalFullPlayerPage extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     vm.isShuffling ? Icons.shuffle_on : Icons.shuffle,
-                    color: vm.isShuffling ? Colors.pink : Colors.grey,
+                    color: vm.isShuffling
+                        ? colorScheme.primary
+                        : colorScheme.onBackground.withOpacity(0.5),
                   ),
                   onPressed: vm.toggleShuffle,
                 ),
@@ -190,8 +216,8 @@ class LocalFullPlayerPage extends StatelessWidget {
                         ? Icons.repeat_one
                         : Icons.repeat,
                     color: vm.loopMode != LoopMode.off
-                        ? Colors.pink
-                        : Colors.grey,
+                        ? colorScheme.primary
+                        : colorScheme.onBackground.withOpacity(0.5),
                   ),
                   onPressed: vm.toggleLoop,
                 ),
