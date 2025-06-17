@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_audio_app/model/local_audio_model.dart';
 import 'package:my_audio_app/resources/audio_query.dart';
-import 'package:my_audio_app/resources/local_music_player.dart';
+import 'package:my_audio_app/resources/local_music_player_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocalAudioPlayerVM extends ChangeNotifier {
