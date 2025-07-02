@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_audio_app/theme/app_theme.dart';
 import 'package:my_audio_app/view/splash/splash.dart';
 import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
-import 'package:my_audio_app/view_model/online_audio_player_vm.dart';
 import 'package:my_audio_app/view_model/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,9 +9,6 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<OnlineAudioPlayerVM>(
-          create: (_) => OnlineAudioPlayerVM(),
-        ),
         ChangeNotifierProvider<LocalAudioPlayerVM>(
           create: (_) => LocalAudioPlayerVM(),
         ),

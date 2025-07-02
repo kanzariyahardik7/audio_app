@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:my_audio_app/view/local_music/local_music_list.dart';
-import 'package:my_audio_app/view/online_music/online_music_list.dart';
 import 'package:my_audio_app/view/theme_selector/theme_selector.dart';
 
 class HomePage extends StatelessWidget {
@@ -48,18 +47,6 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  _buildOptionButton(
-                    context,
-                    title: "🎧 Online Music",
-                    icon: Icons.cloud_queue,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const OnlineMusicListPage(),
-                      ),
-                    ),
-                    primaryColor: primaryColor,
-                  ),
                   const SizedBox(height: 20),
                   _buildOptionButton(
                     context,
