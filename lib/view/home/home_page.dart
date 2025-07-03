@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/local_music/local_music_list.dart';
+import 'package:my_audio_app/view/music/music_list.dart';
 import 'package:my_audio_app/view/theme_selector/theme_selector.dart';
 
 class HomePage extends StatelessWidget {
@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget {
                     icon: Icons.library_music_outlined,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const LocalMusicList()),
+                      MaterialPageRoute(builder: (_) => const MusicList()),
                     ),
                     primaryColor: primaryColor,
                   ),

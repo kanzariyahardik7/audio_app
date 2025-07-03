@@ -11,17 +11,17 @@ class MusicPlayerService {
 
   MusicPlayerService._internal();
 
-  Future<void> setAudioList(List<String> urls) async {
+  Future<void> setAudioList(List<String> filePaths) async {
     if (_playlist == null) {
       _playlist = ConcatenatingAudioSource(
-        children: urls.map((url) => AudioSource.uri(Uri.parse(url))).toList(),
+        children: filePaths.map((path) {
+          final uri = Uri.file(path); // 🔄 Local file URI
+          return AudioSource.uri(uri);
+        }).toList(),
       );
+
       await _player.setAudioSource(_playlist!);
-
-      // ✅ Set loop mode to off or all (optional but recommended)
       await _player.setLoopMode(LoopMode.off);
-
-      // ✅ Enable auto-advance
       await _player.setShuffleModeEnabled(false);
     }
   }

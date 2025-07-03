@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/local_music/local_music_player/local_music_player.dart';
-import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
+import 'package:my_audio_app/view/music/music_player/music_player.dart';
+import 'package:my_audio_app/view_model/audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class LocalMiniPlayer extends StatelessWidget {
-  const LocalMiniPlayer({super.key});
+class MiniPlayer extends StatelessWidget {
+  const MiniPlayer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class LocalMiniPlayer extends StatelessWidget {
     final primaryColor = colorScheme.primary;
     final textColor = colorScheme.onSurface;
 
-    return Consumer<LocalAudioPlayerVM>(
+    return Consumer<AudioPlayerViewModel>(
       builder: (context, vm, _) {
         final index = vm.currentAudioIndex;
         if (!vm.isMiniPlayerVisible || index == null) {
@@ -26,7 +26,7 @@ class LocalMiniPlayer extends StatelessWidget {
           child: InkWell(
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const LocalFullPlayerPage()),
+              MaterialPageRoute(builder: (_) => const FullPlayerPage()),
             ),
             child: SizedBox(
               height: 80,

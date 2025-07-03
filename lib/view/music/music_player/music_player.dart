@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
+import 'package:my_audio_app/view_model/audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class LocalFullPlayerPage extends StatelessWidget {
-  const LocalFullPlayerPage({super.key});
+class FullPlayerPage extends StatelessWidget {
+  const FullPlayerPage({super.key});
 
   String format(Duration d) => d.toString().split('.').first;
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<LocalAudioPlayerVM>(context);
+    final vm = Provider.of<AudioPlayerViewModel>(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     final currentIndex = vm.currentAudioIndex;

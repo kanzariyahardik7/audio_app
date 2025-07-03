@@ -8,4 +8,4 @@ const String clientId = "d62111b1";
 const String clientSecretId = "56ee384fc386b9e59c364c05c279cd64";
 
 String baseUrl =
-    "https://api.jamendo.com/v3.0/tracks/?client_id=YOUR_CLIENT_ID&format=json&limit=5";
+    "https://api.jamendo.com/v3.0/tracks/?client_id=$clientId&format=json&limit=5";

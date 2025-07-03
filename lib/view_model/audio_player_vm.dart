@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_audio_app/model/local_audio_model.dart';
-import 'package:my_audio_app/resources/audio_query.dart';
-import 'package:my_audio_app/resources/local_music_player_service.dart';
+import 'package:my_audio_app/model/audio_model.dart';
+import 'package:my_audio_app/platform_channels/audio_query.dart';
+import 'package:my_audio_app/resources/audio_player_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class LocalAudioPlayerVM extends ChangeNotifier {
-  LocalAudioPlayerVM() {
+class AudioPlayerViewModel extends ChangeNotifier {
+  AudioPlayerViewModel() {
     listenToIndexChanges();
     listenToCompletion(); // ✅ added
   }
@@ -34,7 +34,7 @@ class LocalAudioPlayerVM extends ChangeNotifier {
     });
   }
 
-  List<LocalAudio> audios = [];
+  List<AudioModel> audios = [];
 
   Future<void> requestPermissionAndFetch() async {
     await [Permission.storage, Permission.audio].request();
@@ -45,13 +45,13 @@ class LocalAudioPlayerVM extends ChangeNotifier {
     audios = (rawList as List)
         .whereType<Map<dynamic, dynamic>>() // safe filtering
         .map((e) => Map<String, String>.from(e)) // ensure type safety
-        .map((map) => LocalAudio.fromMap(map))
+        .map((map) => AudioModel.fromMap(map))
         .toList();
 
     notifyListeners();
   }
 
-  final LocalMusicPlayerService _audioService = LocalMusicPlayerService();
+  final MusicPlayerService _audioService = MusicPlayerService();
 
   int? currentAudioIndex;
 

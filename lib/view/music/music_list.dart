@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/local_music/local_music_player/local_mini_player.dart';
-import 'package:my_audio_app/view_model/local_audio_player_vm.dart';
+import 'package:my_audio_app/view/music/music_player/mini_player.dart';
+import 'package:my_audio_app/view_model/audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
-class LocalMusicList extends StatefulWidget {
-  const LocalMusicList({super.key});
+class MusicList extends StatefulWidget {
+  const MusicList({super.key});
 
   @override
-  State<LocalMusicList> createState() => _LocalMusicListState();
+  State<MusicList> createState() => _MusicListState();
 }
 
-class _LocalMusicListState extends State<LocalMusicList> {
-  late LocalAudioPlayerVM localAudioPlayerVM;
+class _MusicListState extends State<MusicList> {
+  late AudioPlayerViewModel localAudioPlayerVM;
 
   @override
   void initState() {
     super.initState();
-    localAudioPlayerVM = Provider.of<LocalAudioPlayerVM>(
+    localAudioPlayerVM = Provider.of<AudioPlayerViewModel>(
       context,
       listen: false,
     );
@@ -36,7 +36,6 @@ class _LocalMusicListState extends State<LocalMusicList> {
     final primaryColor = colorScheme.primary;
     final textColor = colorScheme.onSurface;
     final bgColor = theme.scaffoldBackgroundColor;
-
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -53,7 +52,7 @@ class _LocalMusicListState extends State<LocalMusicList> {
         child: Column(
           children: [
             Expanded(
-              child: Consumer<LocalAudioPlayerVM>(
+              child: Consumer<AudioPlayerViewModel>(
                 builder: (context, value, child) {
                   if (value.audios.isEmpty) {
                     return Center(
@@ -158,7 +157,7 @@ class _LocalMusicListState extends State<LocalMusicList> {
                 },
               ),
             ),
-            const LocalMiniPlayer(),
+            const MiniPlayer(),
           ],
         ),
       ),
