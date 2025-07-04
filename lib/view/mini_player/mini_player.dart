@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:my_audio_app/view/music/music_player/music_player.dart';
+import 'package:marquee/marquee.dart';
+import 'package:my_audio_app/resources/colors.dart';
+import 'package:my_audio_app/view/music_player/music_player.dart';
 import 'package:my_audio_app/view_model/audio_player_vm.dart';
 import 'package:provider/provider.dart';
 
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({super.key});
 
+  openMusicPlayerBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent, // to allow custom rounded corners
+      builder: (context) => const MusicBottomSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final primaryColor = colorScheme.primary;
-    final textColor = colorScheme.onSurface;
+    final textColor = MyColors.white;
 
     return Consumer<AudioPlayerViewModel>(
       builder: (context, vm, _) {
@@ -23,11 +34,11 @@ class MiniPlayer extends StatelessWidget {
 
         return Material(
           color: primaryColor,
-          child: InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const FullPlayerPage()),
-            ),
+          child: GestureDetector(
+            onTap: () {
+              openMusicPlayerBottomSheet(context);
+            },
+
             child: SizedBox(
               height: 80,
               width: double.infinity,
@@ -39,22 +50,34 @@ class MiniPlayer extends StatelessWidget {
                     backgroundColor: textColor.withOpacity(0.15),
                     child: Icon(Icons.music_note, color: textColor, size: 28),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          currentAudio.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: textColor,
+                        SizedBox(
+                          height: 20,
+                          width: double.infinity,
+                          child: Marquee(
+                            text: currentAudio.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: textColor,
+                            ),
+                            blankSpace: 60.0,
+                            velocity: 30.0,
+
+                            pauseAfterRound: Duration(seconds: 1),
+                            startPadding: 12.0,
+                            accelerationDuration: Duration(seconds: 1),
+                            accelerationCurve: Curves.linear,
+                            decelerationDuration: Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
                           ),
                         ),
+
                         const SizedBox(height: 4),
                         Text(
                           currentAudio.artist.isNotEmpty
@@ -70,7 +93,10 @@ class MiniPlayer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  IconButton(
+                    icon: Icon(Icons.skip_previous_rounded, color: textColor),
+                    onPressed: vm.playPreviousSong,
+                  ),
                   StreamBuilder<bool>(
                     stream: vm.player.playingStream,
                     initialData: vm.player.playing,
@@ -88,7 +114,11 @@ class MiniPlayer extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(width: 12),
+                  IconButton(
+                    icon: Icon(Icons.skip_next_rounded, color: textColor),
+                    onPressed: vm.playNextSong,
+                  ),
+                  const SizedBox(width: 8),
                 ],
               ),
             ),

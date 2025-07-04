@@ -1,8 +1,9 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_audio_app/model/audio_model.dart';
 import 'package:my_audio_app/platform_channels/audio_query.dart';
-import 'package:my_audio_app/resources/audio_player_service.dart';
+import 'package:my_audio_app/resources/audio_player_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AudioPlayerViewModel extends ChangeNotifier {
@@ -35,10 +36,16 @@ class AudioPlayerViewModel extends ChangeNotifier {
   }
 
   List<AudioModel> audios = [];
+  bool isLoading = false;
+
+  setIsLoading(bool flag) {
+    isLoading = flag;
+    notifyListeners();
+  }
 
   Future<void> requestPermissionAndFetch() async {
     await [Permission.storage, Permission.audio].request();
-
+    setIsLoading(true);
     final rawList = await AudioQuery().getAllAudio();
 
     // Safely cast and convert to model list
@@ -47,11 +54,11 @@ class AudioPlayerViewModel extends ChangeNotifier {
         .map((e) => Map<String, String>.from(e)) // ensure type safety
         .map((map) => AudioModel.fromMap(map))
         .toList();
-
+    setIsLoading(false);
     notifyListeners();
   }
 
-  final MusicPlayerService _audioService = MusicPlayerService();
+  final MusicPlayerHelper _audioService = MusicPlayerHelper();
 
   int? currentAudioIndex;
 
@@ -70,13 +77,29 @@ class AudioPlayerViewModel extends ChangeNotifier {
 
   /// ✅ Play audio at index from local file path
   void play(int index) async {
-    final filePaths = audios.map((e) => e.path).toList(); // 🎯 Use local paths
+    final filePaths = audios.map((e) => e.path).toList();
+
+    final mediaItems = audios.asMap().entries.map((entry) {
+      final i = entry.key;
+      final e = entry.value;
+
+      return MediaItem(
+        id: (i + 1).toString(),
+        title: e.title,
+        artist: e.artist,
+        album: 'Album Name',
+        duration: Duration.zero, // Will be updated automatically
+        // artUri: Uri.file(e.albumArt ?? ''), // If available
+      );
+    }).toList();
+
     currentAudioIndex = index;
     isMiniPlayerVisible = true;
     notifyListeners();
 
-    await _audioService.setAudioList(filePaths); // 🆕 set local audio
-    await _audioService.playAtIndex(index);
+    await _audioService.setAudioList(filePaths, mediaItems);
+    await _audioService.playAtIndex(index, mediaItems[index]);
+
     notifyListeners();
   }
 
@@ -98,7 +121,6 @@ class AudioPlayerViewModel extends ChangeNotifier {
     } else {
       seek(duration);
     }
-    // notifyListeners();
   }
 
   void skipBackward10Seconds() {
@@ -109,7 +131,6 @@ class AudioPlayerViewModel extends ChangeNotifier {
     } else {
       seek(Duration.zero);
     }
-    // notifyListeners();
   }
 
   void playNextSong() {

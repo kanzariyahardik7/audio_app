@@ -1,16 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_audio_app/app_dependency/service_locator.dart';
+import 'package:marquee/marquee.dart';
+import 'package:my_audio_app/resources/colors.dart';
 import 'package:my_audio_app/view_model/audio_player_vm.dart';
-import 'package:provider/provider.dart';
 
-class FullPlayerPage extends StatelessWidget {
-  const FullPlayerPage({super.key});
+class MusicBottomSheet extends StatelessWidget {
+  const MusicBottomSheet({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.95,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, controller) => Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: FullPlayerPage(scrollController: controller),
+        ),
+      ),
+    );
+  }
+}
+
+class FullPlayerPage extends StatefulWidget {
+  final ScrollController? scrollController;
+  const FullPlayerPage({super.key, this.scrollController});
+
+  @override
+  State<FullPlayerPage> createState() => _FullPlayerPageState();
+}
+
+class _FullPlayerPageState extends State<FullPlayerPage> {
   String format(Duration d) => d.toString().split('.').first;
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<AudioPlayerViewModel>(context);
+    final vm = getIt<AudioPlayerViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
 
     final currentIndex = vm.currentAudioIndex;
@@ -18,14 +49,15 @@ class FullPlayerPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          currentAudio?.title ?? 'Now Playing',
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: colorScheme.onPrimary),
-        ),
-        backgroundColor: colorScheme.primary,
+        title: Text('Music Player', overflow: TextOverflow.ellipsis),
+        scrolledUnderElevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: colorScheme.onPrimary),
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.keyboard_arrow_down),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -39,39 +71,49 @@ class FullPlayerPage extends StatelessWidget {
               width: 260,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [colorScheme.primary, colorScheme.primaryContainer],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                color: colorScheme.primary.withOpacity(0.15),
+                border: Border.all(color: colorScheme.primary, width: 4),
+                gradient: RadialGradient(
+                  colors: [
+                    colorScheme.primary.withOpacity(0.2),
+                    colorScheme.primary.withOpacity(0.05),
+                  ],
+                  center: Alignment.center,
+                  radius: 0.85,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: colorScheme.shadow.withOpacity(0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
               ),
-              child: Icon(
-                Icons.music_note,
-                size: 100,
-                color: colorScheme.onPrimary,
+              child: Center(
+                child: Icon(
+                  Icons.music_note_rounded,
+                  size: 100,
+                  color: colorScheme.primary,
+                ),
               ),
             ),
-
             const SizedBox(height: 40),
 
             // Song Title
-            Text(
-              currentAudio?.title ?? 'Unknown Title',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onBackground,
+            SizedBox(
+              height: 30,
+              width: double.infinity, // or a fixed width if needed
+              child: Marquee(
+                text: currentAudio?.title ?? 'Unknown Title',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onBackground,
+                ),
+                scrollAxis: Axis.horizontal,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                blankSpace: 60.0,
+                velocity: 40.0,
+                pauseAfterRound: Duration(seconds: 1),
+                startPadding: 10.0,
+                accelerationDuration: Duration(seconds: 1),
+                accelerationCurve: Curves.linear,
+                decelerationDuration: Duration(milliseconds: 500),
+                decelerationCurve: Curves.easeOut,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
 
             const SizedBox(height: 10),
@@ -165,20 +207,28 @@ class FullPlayerPage extends StatelessWidget {
                   color: colorScheme.onBackground,
                   onPressed: vm.skipBackward10Seconds,
                 ),
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: colorScheme.primary,
-                  child: IconButton(
-                    icon: Icon(
-                      vm.isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
-                      color: colorScheme.onPrimary,
-                      size: 36,
-                    ),
-                    onPressed: vm.togglePlayPause,
-                  ),
+                StreamBuilder<bool>(
+                  stream: vm.player.playingStream,
+                  initialData: vm.isPlaying,
+                  builder: (context, snapshot) {
+                    final isPlaying = snapshot.data ?? false;
+                    return CircleAvatar(
+                      radius: 30,
+                      backgroundColor: colorScheme.primary,
+                      child: IconButton(
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          color: MyColors.white,
+                          size: 36,
+                        ),
+                        onPressed: vm.togglePlayPause,
+                      ),
+                    );
+                  },
                 ),
+
                 IconButton(
                   icon: const Icon(Icons.forward_10_rounded),
                   iconSize: 36,
