@@ -103,9 +103,12 @@ class AudioPlayerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void togglePlayPause() {
-    isPlaying ? _audioService.pause() : _audioService.resume();
-    notifyListeners();
+  Future<void> togglePlayPause() async {
+    if (isPlaying) {
+      await _audioService.pause();
+    } else {
+      await _audioService.resume();
+    }
   }
 
   Future<void> seek(Duration duration) async {

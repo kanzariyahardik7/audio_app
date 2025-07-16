@@ -15,6 +15,7 @@ class MyColors {
   static const Color pink = Colors.pink;
   static const Color lime = Colors.lime;
   static const Color brown = Colors.brown;
+  static const Color transparent = Colors.transparent;
 
   static final List<Color> colorOptions = const [
     Color(0xFF1E88E5), // Blue

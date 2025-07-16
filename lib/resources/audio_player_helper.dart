@@ -64,48 +64,48 @@ class MusicPlayerHelper {
     (_audioHandler as AudioServiceHandler).setMediaItemInfo(item);
 
     await _player.play();
-    _audioHandler.play();
+    await _audioHandler.play();
   }
 
-  void play() {
-    _player.play();
-    _audioHandler.play();
+  Future<void> play() async {
+    await _player.play();
+    await _audioHandler.play();
   }
 
-  void pause() {
-    _player.pause();
-    _audioHandler.pause();
+  Future<void> pause() async {
+    await _player.pause();
+    await _audioHandler.pause();
   }
 
-  void resume() => play();
+  Future<void> resume() async => await play();
 
-  void stop() {
-    _player.stop();
-    _audioHandler.stop();
+  void stop() async {
+    await _player.stop();
+    await _audioHandler.stop();
   }
 
-  void dispose() {
-    _player.dispose();
-    _audioHandler.stop();
+  void dispose() async {
+    await _player.dispose();
+    await _audioHandler.stop();
   }
 
   Future<void> seek(Duration position) async {
     await _player.seek(position);
-    _audioHandler.seek(position);
+    await _audioHandler.seek(position);
   }
 
-  void seekToNext() {
-    _player.seekToNext();
-    _audioHandler.skipToNext();
+  void seekToNext() async {
+    await _player.seekToNext();
+    await _audioHandler.skipToNext();
   }
 
-  void seekToPrevious() {
-    _player.seekToPrevious();
-    _audioHandler.skipToPrevious();
+  void seekToPrevious() async {
+    await _player.seekToPrevious();
+    await _audioHandler.skipToPrevious();
   }
 
-  void setShuffleModeEnabled(bool enable) =>
-      _player.setShuffleModeEnabled(enable);
+  void setShuffleModeEnabled(bool enable) async =>
+      await _player.setShuffleModeEnabled(enable);
 
-  void setLoopMode(LoopMode mode) => _player.setLoopMode(mode);
+  void setLoopMode(LoopMode mode) async => await _player.setLoopMode(mode);
 }

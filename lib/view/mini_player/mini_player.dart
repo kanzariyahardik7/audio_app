@@ -12,7 +12,7 @@ class MiniPlayer extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent, // to allow custom rounded corners
+      backgroundColor: MyColors.transparent, // to allow custom rounded corners
       builder: (context) => const MusicBottomSheet(),
     );
   }
