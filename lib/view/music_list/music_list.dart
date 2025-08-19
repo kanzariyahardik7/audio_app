@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_audio_app/app_dependency/service_locator.dart';
+import 'package:my_audio_app/view/isolate/isolate.dart';
 import 'package:my_audio_app/view/mini_player/mini_player.dart';
 import 'package:my_audio_app/view/theme_selector/theme_selector.dart';
 import 'package:my_audio_app/view_model/audio_player_vm.dart';
@@ -46,9 +47,14 @@ class _MusicListState extends State<MusicList> {
             icon: Icon(Icons.color_lens_outlined, color: textColor),
             tooltip: "Change Theme",
             onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (_) => const ThemeSelector()),
+              // );
+
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const ThemeSelector()),
+                MaterialPageRoute(builder: (_) => const IsolatePage()),
               );
             },
           ),

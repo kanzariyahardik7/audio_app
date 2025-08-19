@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_audio_app/resources/colors.dart';
+import 'package:my_audio_app/view/theme_selector/widget/ai_response.dart';
 import 'package:my_audio_app/view_model/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -110,6 +111,16 @@ class ThemeSelector extends StatelessWidget {
                   ),
                 );
               },
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TestMarkdown()),
+                );
+              },
+              child: Text("data"),
             ),
 
             const Spacer(),
